@@ -1,0 +1,692 @@
+--// LOAD UI
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
+
+--// WINDOW
+local Window = Rayfield:CreateWindow({
+   Name = "Zombie Apocalypse",
+   LoadingTitle = "mike4likeme",
+   LoadingSubtitle = "follow mike4likeme",
+   ConfigurationSaving = { Enabled = false }
+})
+
+--// SERVICES
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Lighting = game:GetService("Lighting")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+local itemsFolder = workspace:FindFirstChild("DroppedItems")
+
+-- REMOTES
+local adjustBackpackRemote = ReplicatedStorage:FindFirstChild("Remotes")
+    and ReplicatedStorage.Remotes:FindFirstChild("Tools")
+    and ReplicatedStorage.Remotes.Tools:FindFirstChild("AdjustBackpack")
+
+local pickUpItemRemote = ReplicatedStorage:FindFirstChild("Remotes")
+    and ReplicatedStorage.Remotes:FindFirstChild("Interaction")
+    and ReplicatedStorage.Remotes.Interaction:FindFirstChild("PickUpItem")
+
+--------------------------------------------------
+-- TABS
+--------------------------------------------------
+
+local FPSTab = Window:CreateTab("🚀 FPS Booster", 4483362458)
+local ESPTab = Window:CreateTab("ESP", 4483362458)
+local PlayerTab = Window:CreateTab("Player", 4483362458)
+local ExploitsTab = Window:CreateTab("Exploits", 4483362458)
+
+--------------------------------------------------
+-- ULTRA MEGA MAX FPS BOOSTER
+--------------------------------------------------
+
+local FPSSettings = {
+    RemoveTextures = false,
+    RemoveParticles = false,
+    RemoveDecals = false,
+    OptimizeLighting = false,
+    ReduceShadows = false,
+    DisableBloom = false,
+    DisableBlur = false,
+    DisableSunRays = false,
+    OptimizeTerrain = false,
+    ReduceRenderDistance = false
+}
+
+local originalSettings = {}
+
+-- Function to save original settings
+local function saveOriginalSettings()
+    originalSettings.Brightness = Lighting.Brightness
+    originalSettings.GlobalShadows = Lighting.GlobalShadows
+    originalSettings.Technology = Lighting.Technology
+end
+
+-- Ultra FPS Optimizer
+local function applyFPSBoost()
+    pcall(function()
+        -- Optimize Graphics
+        settings().Rendering.QualityLevel = 1
+        
+        -- Remove Textures
+        if FPSSettings.RemoveTextures then
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("Texture") or v:IsA("Decal") then
+                    v.Transparency = 1
+                end
+                if v:IsA("MeshPart") or v:IsA("Part") then
+                    v.Material = Enum.Material.SmoothPlastic
+                    v.Reflectance = 0
+                end
+            end
+        end
+        
+        -- Remove Particles
+        if FPSSettings.RemoveParticles then
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+                    v.Enabled = false
+                end
+            end
+        end
+        
+        -- Optimize Lighting
+        if FPSSettings.OptimizeLighting then
+            Lighting.GlobalShadows = false
+            Lighting.Brightness = 2
+            Lighting.Technology = Enum.Technology.Compatibility
+        end
+        
+        -- Remove Post Effects
+        if FPSSettings.DisableBloom then
+            for _, effect in pairs(Lighting:GetChildren()) do
+                if effect:IsA("BloomEffect") then
+                    effect.Enabled = false
+                end
+            end
+        end
+        
+        if FPSSettings.DisableBlur then
+            for _, effect in pairs(Lighting:GetChildren()) do
+                if effect:IsA("BlurEffect") then
+                    effect.Enabled = false
+                end
+            end
+        end
+        
+        if FPSSettings.DisableSunRays then
+            for _, effect in pairs(Lighting:GetChildren()) do
+                if effect:IsA("SunRaysEffect") then
+                    effect.Enabled = false
+                end
+            end
+        end
+        
+        -- Optimize Terrain
+        if FPSSettings.OptimizeTerrain then
+            workspace.Terrain.Decoration = false
+        end
+    end)
+end
+
+local function restoreGraphics()
+    pcall(function()
+        -- Restore Textures
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("Texture") or v:IsA("Decal") then
+                v.Transparency = 0
+            end
+        end
+        
+        -- Restore Particles
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                v.Enabled = true
+            end
+        end
+        
+        -- Restore Lighting
+        if originalSettings.Brightness then
+            Lighting.GlobalShadows = originalSettings.GlobalShadows
+            Lighting.Brightness = originalSettings.Brightness
+            Lighting.Technology = originalSettings.Technology
+        end
+        
+        -- Restore Effects
+        for _, effect in pairs(Lighting:GetChildren()) do
+            if effect:IsA("BloomEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") then
+                effect.Enabled = true
+            end
+        end
+        
+        -- Restore Terrain
+        workspace.Terrain.Decoration = true
+    end)
+end
+
+-- Save original settings on load
+saveOriginalSettings()
+
+-- FPS BOOSTER CONTROLS
+FPSTab:CreateSection("🔥 Ultimate FPS Optimization")
+
+FPSTab:CreateButton({
+    Name = "⚡ INSTANT MAX FPS",
+    Callback = function()
+        FPSSettings.RemoveTextures = true
+        FPSSettings.RemoveParticles = true
+        FPSSettings.OptimizeLighting = true
+        FPSSettings.DisableBloom = true
+        FPSSettings.DisableBlur = true
+        FPSSettings.DisableSunRays = true
+        FPSSettings.OptimizeTerrain = true
+        applyFPSBoost()
+        Rayfield:Notify({
+            Title = "FPS Booster",
+            Content = "Ultra MAX settings applied!",
+            Duration = 3
+        })
+    end
+})
+
+FPSTab:CreateSection("Individual Settings")
+
+FPSTab:CreateToggle({
+    Name = "Remove Textures",
+    CurrentValue = false,
+    Callback = function(v)
+        FPSSettings.RemoveTextures = v
+        applyFPSBoost()
+    end
+})
+
+FPSTab:CreateToggle({
+    Name = "Remove Particles",
+    CurrentValue = false,
+    Callback = function(v)
+        FPSSettings.RemoveParticles = v
+        applyFPSBoost()
+    end
+})
+
+FPSTab:CreateToggle({
+    Name = "Optimize Lighting",
+    CurrentValue = false,
+    Callback = function(v)
+        FPSSettings.OptimizeLighting = v
+        applyFPSBoost()
+    end
+})
+
+FPSTab:CreateToggle({
+    Name = "Disable Bloom",
+    CurrentValue = false,
+    Callback = function(v)
+        FPSSettings.DisableBloom = v
+        applyFPSBoost()
+    end
+})
+
+FPSTab:CreateToggle({
+    Name = "Disable Blur",
+    CurrentValue = false,
+    Callback = function(v)
+        FPSSettings.DisableBlur = v
+        applyFPSBoost()
+    end
+})
+
+FPSTab:CreateToggle({
+    Name = "Disable Sun Rays",
+    CurrentValue = false,
+    Callback = function(v)
+        FPSSettings.DisableSunRays = v
+        applyFPSBoost()
+    end
+})
+
+FPSTab:CreateToggle({
+    Name = "Optimize Terrain",
+    CurrentValue = false,
+    Callback = function(v)
+        FPSSettings.OptimizeTerrain = v
+        applyFPSBoost()
+    end
+})
+
+FPSTab:CreateButton({
+    Name = "🔄 Restore Graphics",
+    Callback = function()
+        FPSSettings.RemoveTextures = false
+        FPSSettings.RemoveParticles = false
+        FPSSettings.OptimizeLighting = false
+        FPSSettings.DisableBloom = false
+        FPSSettings.DisableBlur = false
+        FPSSettings.DisableSunRays = false
+        FPSSettings.OptimizeTerrain = false
+        restoreGraphics()
+        Rayfield:Notify({
+            Title = "FPS Booster",
+            Content = "Graphics restored to normal",
+            Duration = 3
+        })
+    end
+})
+
+--------------------------------------------------
+-- ESP SYSTEM
+--------------------------------------------------
+
+local function createESP(item, color)
+    if item:FindFirstChild("ESP") then return end
+
+    local h = Instance.new("Highlight")
+    h.Name = "ESP"
+    h.FillColor = color
+    h.OutlineColor = color
+    h.FillTransparency = 0.5
+    h.Parent = item
+
+    local bill = Instance.new("BillboardGui")
+    bill.Name = "ESPLabel"
+    bill.Size = UDim2.new(0, 140, 0, 40)
+    bill.AlwaysOnTop = true
+    bill.StudsOffset = Vector3.new(0, 2, 0)
+    bill.Parent = item
+
+    local text = Instance.new("TextLabel")
+    text.Size = UDim2.new(1, 0, 1, 0)
+    text.BackgroundTransparency = 1
+    text.TextScaled = true
+    text.TextColor3 = color
+    text.Font = Enum.Font.SourceSansBold
+    text.TextStrokeTransparency = 0
+    text.Text = item.Name
+    text.Parent = bill
+end
+
+local function scanExact(name, color)
+    if not itemsFolder then return end
+    for _, item in pairs(itemsFolder:GetChildren()) do
+        if string.lower(item.Name) == string.lower(name) then
+            createESP(item, color)
+        end
+    end
+end
+
+local function clearESP()
+    if not itemsFolder then return end
+    for _, item in pairs(itemsFolder:GetChildren()) do
+        if item:FindFirstChild("ESP") then item.ESP:Destroy() end
+        if item:FindFirstChild("ESPLabel") then item.ESPLabel:Destroy() end
+    end
+end
+
+-- ESP BUTTONS
+ESPTab:CreateButton({Name = "🔋 Battery", Callback = function() scanExact("Battery", Color3.fromRGB(255, 255, 0)) end})
+ESPTab:CreateButton({Name = "🩹 Bandage", Callback = function() scanExact("Bandage", Color3.fromRGB(255, 0, 0)) end})
+
+ESPTab:CreateButton({
+    Name = "🍖 Food & Drinks",
+    Callback = function()
+        scanExact("Beans", Color3.fromRGB(0, 255, 0))
+        scanExact("Bloxy Cola", Color3.fromRGB(0, 170, 255))
+        scanExact("Bloxiade", Color3.fromRGB(0, 170, 255))
+    end
+})
+
+ESPTab:CreateButton({Name = "⛽ Fuel", Callback = function() scanExact("Fuel", Color3.fromRGB(255, 170, 0)) end})
+
+ESPTab:CreateButton({
+    Name = "🔫 Ammo",
+    Callback = function()
+        scanExact("Medium Ammo", Color3.fromRGB(170, 0, 255))
+        scanExact("Long Ammo", Color3.fromRGB(170, 0, 255))
+        scanExact("Pistol Ammo", Color3.fromRGB(170, 0, 255))
+        scanExact("Shells", Color3.fromRGB(170, 0, 255))
+    end
+})
+
+ESPTab:CreateButton({
+    Name = "🪓 Tools",
+    Callback = function()
+        scanExact("Crowbar", Color3.fromRGB(255, 0, 255))
+        scanExact("Hatchet", Color3.fromRGB(255, 0, 255))
+        scanExact("Knife", Color3.fromRGB(255, 0, 255))
+        scanExact("Fire Axe", Color3.fromRGB(255, 0, 255))
+        scanExact("Spike Bat", Color3.fromRGB(255, 0, 255))
+        scanExact("Spear", Color3.fromRGB(255, 0, 255))
+        scanExact("Chainsaw", Color3.fromRGB(255, 0, 255))
+    end
+})
+
+ESPTab:CreateButton({
+    Name = "🔫 Weapons",
+    Callback = function()
+        scanExact("Pistol", Color3.fromRGB(0, 255, 255))
+        scanExact("Revolver", Color3.fromRGB(0, 255, 255))
+    end
+})
+
+ESPTab:CreateButton({
+    Name = "📦 All Items",
+    Callback = function()
+        if not itemsFolder then return end
+        for _, item in pairs(itemsFolder:GetChildren()) do
+            createESP(item, Color3.fromRGB(200, 200, 200))
+        end
+    end
+})
+
+ESPTab:CreateButton({Name = "❌ Clear ESP", Callback = clearESP})
+
+--------------------------------------------------
+-- PLAYER
+--------------------------------------------------
+
+local infJump = false
+UIS.JumpRequest:Connect(function()
+    if infJump then
+        local h = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+        if h then h:ChangeState(Enum.HumanoidStateType.Jumping) end
+    end
+end)
+
+PlayerTab:CreateToggle({Name = "Infinite Jump", Callback = function(v) infJump = v end})
+
+-- SPEED LOCK
+local speedValue = 50
+local speedConn
+
+local function applySpeed(char)
+    local hum = char:WaitForChild("Humanoid")
+    hum.WalkSpeed = speedValue
+
+    if speedConn then speedConn:Disconnect() end
+    speedConn = hum:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+        if hum.WalkSpeed ~= speedValue then
+            hum.WalkSpeed = speedValue
+        end
+    end)
+end
+
+if player.Character then applySpeed(player.Character) end
+player.CharacterAdded:Connect(applySpeed)
+
+PlayerTab:CreateInput({
+    Name = "WalkSpeed",
+    PlaceholderText = "Enter speed",
+    Callback = function(t)
+        local n = tonumber(t)
+        if n then
+            speedValue = n
+            local c = player.Character
+            if c and c:FindFirstChild("Humanoid") then
+                c.Humanoid.WalkSpeed = speedValue
+            end
+        end
+    end
+})
+
+--------------------------------------------------
+-- KILL AURA
+--------------------------------------------------
+
+local killAura = false
+local auraRange = 25
+local selectedWeaponName = nil
+local useSelectedWeapon = false
+
+local function getHeldTool()
+    local char = player.Character
+    if not char then return end
+    for _, v in pairs(char:GetChildren()) do
+        if v:IsA("Tool") then return v end
+    end
+end
+
+local function getWeapon(char)
+    if useSelectedWeapon and selectedWeaponName then
+        for _, tool in pairs(char:GetChildren()) do
+            if tool:IsA("Tool") and tool.Name == selectedWeaponName then
+                return tool
+            end
+        end
+    end
+    for _, tool in pairs(char:GetChildren()) do
+        if tool:IsA("Tool") then return tool end
+    end
+end
+
+local ZombieList = {
+    spitter = true, bloater = true, hazmat = true, muscle = true,
+    runner = true, crawler = true, zombie = true, riot = true
+}
+
+local function isZombie(m)
+    return ZombieList[string.lower(m.Name)] ~= nil
+end
+
+local function getTargets()
+    local t = {}
+    local char = player.Character
+    if not char then return t end
+
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return t end
+
+    local charactersFolder = workspace:FindFirstChild("Characters")
+    if not charactersFolder then return t end
+
+    for _, v in pairs(charactersFolder:GetChildren()) do
+        if v:IsA("Model") and isZombie(v) then
+            local hum = v:FindFirstChildOfClass("Humanoid")
+            local part = v:FindFirstChild("HumanoidRootPart")
+
+            if hum and part and hum.Health > 0 then
+                if (hrp.Position - part.Position).Magnitude <= auraRange then
+                    table.insert(t, v)
+                end
+            end
+        end
+    end
+    return t
+end
+
+task.spawn(function()
+    while task.wait(0.15) do
+        if killAura then
+            local char = player.Character
+            if not char then continue end
+
+            local tool = getWeapon(char)
+            local auto = char:FindFirstChild("AutoTargetClient")
+
+            if tool and auto then
+                local targets = getTargets()
+                if #targets > 0 then
+                    pcall(function()
+                        auto.UpdateNearbyTargets:FireServer(targets)
+                        if tool:FindFirstChild("HitTargets") then
+                            tool.HitTargets:FireServer(targets)
+                        end
+                        if tool:FindFirstChild("Swing") then
+                            tool.Swing:FireServer()
+                        end
+                    end)
+                end
+            end
+        end
+    end
+end)
+
+PlayerTab:CreateButton({
+    Name = "Set Current Weapon",
+    Callback = function()
+        local tool = getHeldTool()
+        if tool then 
+            selectedWeaponName = tool.Name
+            Rayfield:Notify({
+                Title = "Weapon Selected",
+                Content = "Selected: " .. tool.Name,
+                Duration = 2
+            })
+        end
+    end
+})
+
+PlayerTab:CreateToggle({Name = "Use Selected Weapon", Callback = function(v) useSelectedWeapon = v end})
+PlayerTab:CreateToggle({Name = "Kill Aura", Callback = function(v) killAura = v end})
+PlayerTab:CreateSlider({Name = "Aura Range", Range = {10, 50}, Increment = 1, CurrentValue = 25, Callback = function(v) auraRange = v end})
+
+--------------------------------------------------
+-- AUTO PICKUP
+--------------------------------------------------
+
+ExploitsTab:CreateSection("Auto Pickup")
+
+local autoPickupActive = false
+local autoPickupRadius = 15
+local autoPickupAllItems = false
+local autoPickupSelected = {}
+local autoPickupConnection = nil
+
+local droppedItemsFolder = workspace:FindFirstChild("DroppedItems")
+
+local function getItemMainPart(model)
+    return model:FindFirstChildWhichIsA("BasePart")
+end
+
+local function startAutoPickup()
+    if autoPickupConnection then autoPickupConnection:Disconnect() end
+
+    autoPickupConnection = RunService.Heartbeat:Connect(function()
+        if not autoPickupActive then return end
+
+        local char = player.Character
+        if not char then return end
+
+        local root = char:FindFirstChild("HumanoidRootPart")
+        if not root or not droppedItemsFolder then return end
+
+        local pos = root.Position
+
+        for _, item in ipairs(droppedItemsFolder:GetChildren()) do
+            if not (autoPickupAllItems or autoPickupSelected[item.Name]) then continue end
+
+            local part = item.PrimaryPart or getItemMainPart(item)
+
+            if part and (part.Position - pos).Magnitude <= autoPickupRadius then
+                pcall(function()
+                    if adjustBackpackRemote then
+                        adjustBackpackRemote:FireServer(item)
+                    elseif pickUpItemRemote then
+                        pickUpItemRemote:FireServer(item)
+                    end
+                end)
+                task.wait(0.05)
+            end
+        end
+    end)
+end
+
+ExploitsTab:CreateToggle({
+    Name = "Auto Pickup",
+    Callback = function(v)
+        autoPickupActive = v
+        if v then 
+            startAutoPickup()
+        elseif autoPickupConnection then 
+            autoPickupConnection:Disconnect() 
+        end
+    end
+})
+
+ExploitsTab:CreateToggle({
+    Name = "Pickup All Items",
+    Callback = function(v) autoPickupAllItems = v end
+})
+
+ExploitsTab:CreateSlider({
+    Name = "Pickup Radius",
+    Range = {5, 100},
+    Increment = 1,
+    CurrentValue = 15,
+    Callback = function(v) autoPickupRadius = v end
+})
+
+ExploitsTab:CreateSection("Selected Pickup")
+
+local itemsList = {
+    "Battery", "Bandage", "Beans", "Bloxy Cola", "Bloxiade", "Fuel",
+    "Medium Ammo", "Long Ammo", "Pistol Ammo", "Shells",
+    "Crowbar", "Knife", "Pistol", "Revolver",
+    "Fire Axe", "Spike Bat", "Spear", "Chainsaw", "Scrap"
+}
+
+for _, name in ipairs(itemsList) do
+    ExploitsTab:CreateToggle({
+        Name = name,
+        Callback = function(v)
+            autoPickupSelected[name] = v
+        end
+    })
+end
+
+
+
+--------------------------------------------------
+-- NOCLIP SYSTEM
+--------------------------------------------------
+
+local noclip = false
+local noclipConn
+
+local function startNoclip()
+    if noclipConn then noclipConn:Disconnect() end
+    noclipConn = RunService.Stepped:Connect(function()
+        if noclip and player.Character then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end)
+end
+
+player.CharacterAdded:Connect(function()
+    if noclip then
+        task.wait(1)
+        startNoclip()
+    end
+end)
+
+PlayerTab:CreateToggle({
+    Name = "Noclip",
+    CurrentValue = false,
+    Callback = function(v)
+        noclip = v
+        if v then
+            startNoclip()
+        else
+            if noclipConn then noclipConn:Disconnect() end
+            if player.Character then
+                for _, part in pairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = true
+                    end
+                end
+            end
+        end
+    end
+})
+
+-- Notification
+Rayfield:Notify({
+    Title = "Script Loaded",
+    Content = "Zombie Apocalypse script with Ultra FPS Booster ready!",
+    Duration = 5
+})
